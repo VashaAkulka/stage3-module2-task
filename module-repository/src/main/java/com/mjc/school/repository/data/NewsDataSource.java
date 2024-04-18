@@ -10,7 +10,6 @@ import java.util.List;
 @Component
 public class NewsDataSource implements BaseDataSource<NewsModel> {
     private final String pathNews = "module-repository/src/main/resources/news.bin";
-    private final List<NewsModel> newsList = new ArrayList<>();
     static private NewsDataSource instance = null;
 
     private NewsDataSource() {
@@ -26,7 +25,7 @@ public class NewsDataSource implements BaseDataSource<NewsModel> {
 
     @Override
     public List<NewsModel> read() {
-
+        List<NewsModel> newsList = new ArrayList<>();
         try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(pathNews))) {
             while(true) {
                 try {
@@ -46,7 +45,7 @@ public class NewsDataSource implements BaseDataSource<NewsModel> {
     @Override
     public void write(List<NewsModel> list) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(pathNews))) {
-            for (NewsModel news : newsList) oos.writeObject(news);
+            for (NewsModel news : list) oos.writeObject(news);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
