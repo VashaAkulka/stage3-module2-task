@@ -27,61 +27,40 @@ public class AuthorService implements BaseService<AuthorModel, AuthorDTO, Long> 
     }
 
     @Override
-    public AuthorDTO readById(Long id) {
-        try {
-            return AuthorMapper.INSTANCE.authorToAuthorDto(repository.readById(id).orElseThrow(() -> new ValidationException(ErrorCode.NO_SUCH_AUTHOR.getErrorData())));
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
+    public AuthorDTO readById(Long id) throws ValidationException {
+        return AuthorMapper.INSTANCE.authorToAuthorDto(repository.readById(id).orElseThrow(() -> new ValidationException(ErrorCode.NO_SUCH_AUTHOR.getErrorData())));
     }
 
     @Override
-    public AuthorDTO create(AuthorModel createRequest) {
-        try {
-            validation.validate(createRequest);
+    public AuthorDTO create(AuthorModel createRequest) throws ValidationException {
+        validation.validate(createRequest);
 
-            OptionalLong maxId = repository.readAll()
-                    .stream()
-                    .mapToLong(AuthorModel::getId)
-                    .max();
+        OptionalLong maxId = repository.readAll()
+                .stream()
+                .mapToLong(AuthorModel::getId)
+                .max();
 
-            long nextId = maxId.orElse(0) + 1;
-            createRequest.setId(nextId);
+        long nextId = maxId.orElse(0) + 1;
+        createRequest.setId(nextId);
 
-            createRequest.setCreateDate(LocalDateTime.now());
-            createRequest.setLastUpdateDate(LocalDateTime.now());
+        createRequest.setCreateDate(LocalDateTime.now());
+        createRequest.setLastUpdateDate(LocalDateTime.now());
 
-            return AuthorMapper.INSTANCE.authorToAuthorDto(repository.create(createRequest));
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
+        return AuthorMapper.INSTANCE.authorToAuthorDto(repository.create(createRequest));
     }
 
     @Override
-    public AuthorDTO update(AuthorModel updateRequest) {
-        try {
-            validation.validate(updateRequest);
+    public AuthorDTO update(AuthorModel updateRequest) throws ValidationException {
+        validation.validate(updateRequest);
 
-            updateRequest.setLastUpdateDate(LocalDateTime.now());
-            AuthorModel author = repository.update(updateRequest);
-            if (author == null) throw new ValidationException(ErrorCode.NO_SUCH_AUTHOR.getErrorData());
-            return AuthorMapper.INSTANCE.authorToAuthorDto(author);
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
+        updateRequest.setLastUpdateDate(LocalDateTime.now());
+        if (!repository.existById(updateRequest.getId())) throw new ValidationException(ErrorCode.NO_SUCH_AUTHOR.getErrorData());
+        return AuthorMapper.INSTANCE.authorToAuthorDto(repository.update(updateRequest));
     }
 
     @Override
-    public boolean deleteById(Long id) {
-        try {
-            if (!repository.deleteById(id)) throw new ValidationException(ErrorCode.NO_SUCH_AUTHOR.getErrorData());
-            return true;
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-            return false;
-        }
+    public boolean deleteById(Long id) throws ValidationException {
+        if (!repository.existById(id)) throw new ValidationException(ErrorCode.NO_SUCH_AUTHOR.getErrorData());
+        return repository.deleteById(id);
     }
 }

@@ -15,6 +15,7 @@ import java.util.Optional;
 public class AuthorRepository implements BaseRepository<AuthorModel, Long> {
 
     BaseDataSource<AuthorModel> source;
+    BaseRepository<NewsModel, Long> repository;
 
     @Override
     public List<AuthorModel> readAll() {
@@ -55,6 +56,12 @@ public class AuthorRepository implements BaseRepository<AuthorModel, Long> {
     public boolean deleteById(Long id) {
         boolean result;
         List<AuthorModel> authorModelList = source.read();
+        List<NewsModel> newsModelList = repository.readAll();
+
+        for(NewsModel news : newsModelList) {
+            if (news.getAuthorId().equals(id)) repository.deleteById(news.getId());
+        }
+
         result = authorModelList.removeIf(news -> news.getId().equals(id));
         source.write(authorModelList);
         return result;
