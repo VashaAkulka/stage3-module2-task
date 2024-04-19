@@ -13,19 +13,19 @@ import java.util.Scanner;
 
 @Component
 @RequiredArgsConstructor
-public class App implements BaseApp {
+public class App {
     private final AuthorController authorController;
     private final NewsController newsController;
     Scanner scanner = new Scanner(System.in);
 
-    @Override
+
     public void startApp() {
         while (true) {
-            System.out.println(MenuText.ENTER_NUMBER_OF_OPERATION);
             for (MenuOption options: MenuOption.values()) {
                 System.out.println(options.getOptionCode() + " - " + options.getOptionName());
             }
 
+            System.out.print(MenuText.ENTER_NUMBER_OF_OPERATION.getText());
             switch (scanner.nextLine()) {
                 case "1" -> viewAllNews();
                 case "2" -> viewsNewsById();
@@ -46,58 +46,62 @@ public class App implements BaseApp {
     private void addNews() {
         NewsModel newsModel = new NewsModel();
 
-        System.out.print(MenuText.ENTER_NEWS_TITLE);
-        scanner.nextLine();
+        System.out.print(MenuText.ENTER_NEWS_TITLE.getText());
         newsModel.setTitle(scanner.nextLine());
-        System.out.print(MenuText.ENTER_NEWS_CONTENT);
+        System.out.print(MenuText.ENTER_NEWS_CONTENT.getText());
         newsModel.setContent(scanner.nextLine());
-        System.out.print(MenuText.ENTER_NEWS_AUTHOR_ID);
+        System.out.print(MenuText.ENTER_NEWS_AUTHOR_ID.getText());
         newsModel.setAuthorId(scanner.nextLong());
 
+        scanner.nextLine();
         newsController.create(newsModel);
     }
 
     private void addAuthor() {
         AuthorModel authorModel = new AuthorModel();
 
-        System.out.print(MenuText.ENTER_AUTHOR_NAME);
+        System.out.print(MenuText.ENTER_AUTHOR_NAME.getText());
         authorModel.setName(scanner.next());
 
+        scanner.nextLine();
         authorController.create(authorModel);
     }
 
     private void editNews() {
         NewsModel newsModel = new NewsModel();
 
-        System.out.print(MenuText.ENTER_NEWS_TITLE);
-        scanner.nextLine();
+        System.out.print(MenuText.ENTER_NEWS_TITLE.getText());
         newsModel.setTitle(scanner.nextLine());
-        System.out.print(MenuText.ENTER_NEWS_CONTENT);
+        System.out.print(MenuText.ENTER_NEWS_CONTENT.getText());
         newsModel.setContent(scanner.nextLine());
-        System.out.print(MenuText.ENTER_NEWS_AUTHOR_ID);
+        System.out.print(MenuText.ENTER_NEWS_AUTHOR_ID.getText());
         newsModel.setAuthorId(scanner.nextLong());
 
+        scanner.nextLine();
         newsController.update(newsModel);
     }
 
     private void editAuthor() {
         AuthorModel authorModel = new AuthorModel();
 
-        System.out.print(MenuText.ENTER_AUTHOR_NAME);
+        System.out.print(MenuText.ENTER_AUTHOR_NAME.getText());
         authorModel.setName(scanner.next());
 
+        scanner.nextLine();
         authorController.update(authorModel);
     }
 
     private void deleteNews() {
-        System.out.print(MenuText.ENTER_NEWS_ID);
+        System.out.print(MenuText.ENTER_NEWS_ID.getText());
         long id = scanner.nextLong();
+        scanner.nextLine();
         newsController.deleteById(id);
     }
 
     private void deleteAuthor() {
-        System.out.print(MenuText.ENTER_NEWS_AUTHOR_ID);
+        System.out.print(MenuText.ENTER_NEWS_AUTHOR_ID.getText());
         long id = scanner.nextLong();
+        scanner.nextLine();
         authorController.deleteById(id);
     }
 
@@ -107,8 +111,9 @@ public class App implements BaseApp {
     }
 
     private void viewsNewsById() {
-        System.out.print(MenuText.ENTER_NEWS_ID);
+        System.out.print(MenuText.ENTER_NEWS_ID.getText());
         long id = scanner.nextLong();
+        scanner.nextLine();
         newsController.readById(id);
     }
 
@@ -117,8 +122,9 @@ public class App implements BaseApp {
     }
 
     private void viewsAuthorById() {
-        System.out.print(MenuText.ENTER_NEWS_AUTHOR_ID);
+        System.out.print(MenuText.ENTER_NEWS_AUTHOR_ID.getText());
         long id = scanner.nextLong();
+        scanner.nextLine();
         authorController.readById(id);
     }
 }
