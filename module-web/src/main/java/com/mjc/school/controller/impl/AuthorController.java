@@ -1,7 +1,6 @@
 package com.mjc.school.controller.impl;
 
 import com.mjc.school.controller.BaseController;
-import com.mjc.school.repository.model.AuthorModel;
 import com.mjc.school.service.BaseService;
 import com.mjc.school.service.dto.AuthorDTO;
 import com.mjc.school.service.error.ValidationException;
@@ -12,8 +11,8 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
-public class AuthorController implements BaseController<AuthorModel, AuthorDTO, Long> {
-    BaseService<AuthorModel, AuthorDTO, Long> service;
+public class AuthorController implements BaseController<AuthorDTO, Long> {
+    BaseService<AuthorDTO, Long> service;
 
     @Override
     public List<AuthorDTO> readAll() {
@@ -33,7 +32,7 @@ public class AuthorController implements BaseController<AuthorModel, AuthorDTO, 
     }
 
     @Override
-    public AuthorDTO create(AuthorModel createRequest) {
+    public AuthorDTO create(AuthorDTO createRequest) {
         try {
             return service.create(createRequest);
         } catch (ValidationException e) {
@@ -43,9 +42,9 @@ public class AuthorController implements BaseController<AuthorModel, AuthorDTO, 
     }
 
     @Override
-    public AuthorDTO update(AuthorModel updateRequest) {
+    public AuthorDTO update(AuthorDTO updateRequest, Long id) {
         try {
-            return service.update(updateRequest);
+            return service.update(updateRequest, id);
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
             return null;

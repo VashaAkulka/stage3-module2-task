@@ -3,6 +3,7 @@ package com.mjc.school.service.validate;
 import com.mjc.school.repository.BaseRepository;
 import com.mjc.school.repository.model.AuthorModel;
 import com.mjc.school.repository.model.NewsModel;
+import com.mjc.school.service.dto.NewsDTO;
 import com.mjc.school.service.error.ErrorCode;
 import com.mjc.school.service.error.ValidationException;
 import lombok.AllArgsConstructor;
@@ -10,11 +11,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class ValidationNews implements BaseValidation<NewsModel> {
+public class ValidationNews implements BaseValidation<NewsDTO> {
 
     BaseRepository<AuthorModel, Long> repository;
 
-    public void validate(NewsModel news) throws ValidationException {
+    public void validate(NewsDTO news) throws ValidationException {
         String title = news.getTitle();
         String content = news.getContent();
         Long id = news.getAuthorId();

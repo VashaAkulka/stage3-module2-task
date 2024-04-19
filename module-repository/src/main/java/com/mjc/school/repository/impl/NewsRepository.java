@@ -36,11 +36,16 @@ public class NewsRepository implements BaseRepository<NewsModel, Long> {
     }
 
     @Override
-    public NewsModel update(NewsModel entity) {
+    public NewsModel update(NewsModel entity, Long id) {
         List<NewsModel> newsModelList = source.read();
 
         for (int i = 0; i < newsModelList.size(); i++) {
-            if (newsModelList.get(i).getId().equals(entity.getId())) {
+            if (newsModelList.get(i).getId().equals(id)) {
+                entity.setId(id);
+                entity.setCreateDate(newsModelList.get(i).getCreateDate());
+                entity.setTitle(newsModelList.get(i).getTitle());
+                entity.setContent(newsModelList.get(i).getContent());
+
                 newsModelList.set(i, entity);
                 source.write(newsModelList);
                 return entity;

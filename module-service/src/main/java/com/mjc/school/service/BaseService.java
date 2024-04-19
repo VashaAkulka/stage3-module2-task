@@ -4,14 +4,14 @@ import com.mjc.school.service.error.ValidationException;
 
 import java.util.List;
 
-public interface BaseService<T, R, K> {
+public interface BaseService<R, K> {
     List<R> readAll();
 
     R readById(K id) throws ValidationException;
 
-    R create(T createRequest) throws ValidationException;
+    R create(R createRequest) throws ValidationException;
 
-    R update(T updateRequest) throws ValidationException;
+    R update(R updateRequest, K id) throws ValidationException;
 
     boolean deleteById(K id) throws ValidationException;
 }

@@ -38,11 +38,14 @@ public class AuthorRepository implements BaseRepository<AuthorModel, Long> {
     }
 
     @Override
-    public AuthorModel update(AuthorModel entity) {
+    public AuthorModel update(AuthorModel entity, Long id) {
         List<AuthorModel> authorModelList = source.read();
 
         for (int i = 0; i < authorModelList.size(); i++) {
-            if (authorModelList.get(i).getId().equals(entity.getId())) {
+            if (authorModelList.get(i).getId().equals(id)) {
+                entity.setId(id);
+                entity.setCreateDate(authorModelList.get(i).getCreateDate());
+
                 authorModelList.set(i, entity);
                 source.write(authorModelList);
                 return entity;

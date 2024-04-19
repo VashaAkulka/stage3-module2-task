@@ -2,15 +2,15 @@ package com.mjc.school.controller;
 
 import java.util.List;
 
-public interface BaseController<T, R, K> {
+public interface BaseController<R, K> {
 
     List<R> readAll();
 
     R readById(K id);
 
-    R create(T createRequest);
+    R create(R createRequest);
 
-    R update(T updateRequest);
+    R update(R updateRequest, Long id);
 
     boolean deleteById(K id);
 }

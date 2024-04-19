@@ -1,11 +1,10 @@
 package com.mjc.school.controller.app;
 
-import com.mjc.school.controller.impl.AuthorController;
-import com.mjc.school.controller.impl.NewsController;
+import com.mjc.school.controller.BaseController;
 import com.mjc.school.controller.menu.MenuOption;
 import com.mjc.school.controller.menu.MenuText;
-import com.mjc.school.repository.model.AuthorModel;
-import com.mjc.school.repository.model.NewsModel;
+import com.mjc.school.service.dto.AuthorDTO;
+import com.mjc.school.service.dto.NewsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +13,8 @@ import java.util.Scanner;
 @Component
 @RequiredArgsConstructor
 public class App {
-    private final AuthorController authorController;
-    private final NewsController newsController;
+    private final BaseController<AuthorDTO, Long> authorController;
+    private final BaseController<NewsDTO, Long> newsController;
     Scanner scanner = new Scanner(System.in);
 
 
@@ -44,7 +43,7 @@ public class App {
     }
 
     private void addNews() {
-        NewsModel newsModel = new NewsModel();
+        NewsDTO newsModel = new NewsDTO();
 
         System.out.print(MenuText.ENTER_NEWS_TITLE.getText());
         newsModel.setTitle(scanner.nextLine());
@@ -58,7 +57,7 @@ public class App {
     }
 
     private void addAuthor() {
-        AuthorModel authorModel = new AuthorModel();
+        AuthorDTO authorModel = new AuthorDTO();
 
         System.out.print(MenuText.ENTER_AUTHOR_NAME.getText());
         authorModel.setName(scanner.next());
@@ -68,7 +67,7 @@ public class App {
     }
 
     private void editNews() {
-        NewsModel newsModel = new NewsModel();
+        NewsDTO newsModel = new NewsDTO();
 
         System.out.print(MenuText.ENTER_NEWS_TITLE.getText());
         newsModel.setTitle(scanner.nextLine());
@@ -76,19 +75,23 @@ public class App {
         newsModel.setContent(scanner.nextLine());
         System.out.print(MenuText.ENTER_NEWS_AUTHOR_ID.getText());
         newsModel.setAuthorId(scanner.nextLong());
+        System.out.println(MenuText.ENTER_NEWS_ID.getText());
+        Long id = scanner.nextLong();
 
         scanner.nextLine();
-        newsController.update(newsModel);
+        newsController.update(newsModel, id);
     }
 
     private void editAuthor() {
-        AuthorModel authorModel = new AuthorModel();
+        AuthorDTO authorModel = new AuthorDTO();
 
         System.out.print(MenuText.ENTER_AUTHOR_NAME.getText());
         authorModel.setName(scanner.next());
+        System.out.print(MenuText.ENTER_NEWS_AUTHOR_ID.getText());
+        Long id = scanner.nextLong();
 
         scanner.nextLine();
-        authorController.update(authorModel);
+        authorController.update(authorModel, id);
     }
 
     private void deleteNews() {

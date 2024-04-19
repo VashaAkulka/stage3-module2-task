@@ -17,8 +17,8 @@ import java.util.OptionalLong;
 
 @Service
 @AllArgsConstructor
-public class AuthorService implements BaseService<AuthorModel, AuthorDTO, Long> {
-    private BaseValidation<AuthorModel> validation;
+public class AuthorService implements BaseService<AuthorDTO, Long> {
+    private BaseValidation<AuthorDTO> validation;
     private BaseRepository<AuthorModel, Long> repository;
 
     @Override
@@ -32,7 +32,7 @@ public class AuthorService implements BaseService<AuthorModel, AuthorDTO, Long> 
     }
 
     @Override
-    public AuthorDTO create(AuthorModel createRequest) throws ValidationException {
+    public AuthorDTO create(AuthorDTO createRequest) throws ValidationException {
         validation.validate(createRequest);
 
         OptionalLong maxId = repository.readAll()
@@ -41,21 +41,27 @@ public class AuthorService implements BaseService<AuthorModel, AuthorDTO, Long> 
                 .max();
 
         long nextId = maxId.orElse(0) + 1;
-        createRequest.setId(nextId);
+        AuthorModel authorModel = new AuthorModel();
+        authorModel.setId(nextId);
 
-        createRequest.setCreateDate(LocalDateTime.now());
-        createRequest.setLastUpdateDate(LocalDateTime.now());
+        authorModel.setCreateDate(LocalDateTime.now());
+        authorModel.setLastUpdateDate(LocalDateTime.now());
 
-        return AuthorMapper.INSTANCE.authorToAuthorDto(repository.create(createRequest));
+        authorModel.setName(createRequest.getName());
+
+        return AuthorMapper.INSTANCE.authorToAuthorDto(repository.create(authorModel));
     }
 
     @Override
-    public AuthorDTO update(AuthorModel updateRequest) throws ValidationException {
+    public AuthorDTO update(AuthorDTO updateRequest, Long id) throws ValidationException {
         validation.validate(updateRequest);
 
-        updateRequest.setLastUpdateDate(LocalDateTime.now());
-        if (!repository.existById(updateRequest.getId())) throw new ValidationException(ErrorCode.NO_SUCH_AUTHOR.getErrorData());
-        return AuthorMapper.INSTANCE.authorToAuthorDto(repository.update(updateRequest));
+        AuthorModel authorModel = new AuthorModel();
+        authorModel.setLastUpdateDate(LocalDateTime.now());
+        authorModel.setName(updateRequest.getName());
+
+        if (!repository.existById(id)) throw new ValidationException(ErrorCode.NO_SUCH_AUTHOR.getErrorData());
+        return AuthorMapper.INSTANCE.authorToAuthorDto(repository.update(authorModel, id));
     }
 
     @Override

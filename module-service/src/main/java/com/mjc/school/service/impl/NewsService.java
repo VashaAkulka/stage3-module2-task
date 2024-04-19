@@ -17,8 +17,8 @@ import java.util.OptionalLong;
 
 @Service
 @AllArgsConstructor
-public class NewsService implements BaseService<NewsModel, NewsDTO, Long> {
-    private BaseValidation<NewsModel> validation;
+public class NewsService implements BaseService<NewsDTO, Long> {
+    private BaseValidation<NewsDTO> validation;
     private BaseRepository<NewsModel, Long> repository;
 
     @Override
@@ -32,7 +32,7 @@ public class NewsService implements BaseService<NewsModel, NewsDTO, Long> {
     }
 
     @Override
-    public NewsDTO create(NewsModel createRequest) throws ValidationException {
+    public NewsDTO create(NewsDTO createRequest) throws ValidationException {
         validation.validate(createRequest);
 
         OptionalLong maxId = repository.readAll()
@@ -40,22 +40,32 @@ public class NewsService implements BaseService<NewsModel, NewsDTO, Long> {
                 .mapToLong(NewsModel::getId)
                 .max();
 
+        NewsModel newsModel = new NewsModel();
         long nextId = maxId.orElse(0) + 1;
-        createRequest.setId(nextId);
+        newsModel.setId(nextId);
 
-        createRequest.setCreateDate(LocalDateTime.now());
-        createRequest.setLastUpdateDate(LocalDateTime.now());
+        newsModel.setCreateDate(LocalDateTime.now());
+        newsModel.setLastUpdateDate(LocalDateTime.now());
 
-        return NewsMapper.INSTANCE.newsToNewsDto(repository.create(createRequest));
+        newsModel.setTitle(createRequest.getTitle());
+        newsModel.setContent(createRequest.getContent());
+        newsModel.setAuthorId(createRequest.getAuthorId());
+
+        return NewsMapper.INSTANCE.newsToNewsDto(repository.create(newsModel));
     }
 
     @Override
-    public NewsDTO update(NewsModel updateRequest) throws ValidationException {
+    public NewsDTO update(NewsDTO updateRequest, Long id) throws ValidationException {
         validation.validate(updateRequest);
 
-        updateRequest.setLastUpdateDate(LocalDateTime.now());
-        if (!repository.existById(updateRequest.getId())) throw new ValidationException(ErrorCode.NO_SUCH_NEWS.getErrorData());
-        return NewsMapper.INSTANCE.newsToNewsDto(repository.update(updateRequest));
+        NewsModel newsModel = new NewsModel();
+        newsModel.setLastUpdateDate(LocalDateTime.now());
+        newsModel.setAuthorId(updateRequest.getAuthorId());
+        newsModel.setTitle(updateRequest.getTitle());
+        newsModel.setContent(updateRequest.getContent());
+
+        if (!repository.existById(id)) throw new ValidationException(ErrorCode.NO_SUCH_NEWS.getErrorData());
+        return NewsMapper.INSTANCE.newsToNewsDto(repository.update(newsModel, id));
     }
 
     @Override

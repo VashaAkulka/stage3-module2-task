@@ -1,7 +1,6 @@
 package com.mjc.school.controller.impl;
 
 import com.mjc.school.controller.BaseController;
-import com.mjc.school.repository.model.NewsModel;
 import com.mjc.school.service.BaseService;
 import com.mjc.school.service.dto.NewsDTO;
 import com.mjc.school.service.error.ValidationException;
@@ -12,9 +11,9 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
-public class NewsController implements BaseController<NewsModel, NewsDTO, Long> {
+public class NewsController implements BaseController<NewsDTO, Long> {
 
-    BaseService<NewsModel, NewsDTO, Long> service;
+    BaseService<NewsDTO, Long> service;
 
     @Override
     public List<NewsDTO> readAll() {
@@ -34,7 +33,7 @@ public class NewsController implements BaseController<NewsModel, NewsDTO, Long> 
     }
 
     @Override
-    public NewsDTO create(NewsModel createRequest) {
+    public NewsDTO create(NewsDTO createRequest) {
         try {
             NewsDTO newsDTO = service.create(createRequest);
             System.out.println("Create success");
@@ -46,9 +45,9 @@ public class NewsController implements BaseController<NewsModel, NewsDTO, Long> 
     }
 
     @Override
-    public NewsDTO update(NewsModel updateRequest) {
+    public NewsDTO update(NewsDTO updateRequest, Long id) {
         try {
-            NewsDTO newsDTO = service.update(updateRequest);
+            NewsDTO newsDTO = service.update(updateRequest, id);
             System.out.println("Update success");
             return newsDTO;
         } catch (ValidationException e) {
